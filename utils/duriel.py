@@ -3,6 +3,7 @@ import time
 import requests
 import csv
 import re
+from bs4 import *
 
 rq = requests.session()  # 创建session对象，保持会话
 head = {
