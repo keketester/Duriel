@@ -5,12 +5,16 @@ import csv
 import re
 from bs4 import *
 from lxml import etree
+import base64
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
 
 parser = etree.HTMLParser(encoding="utf-8")
 rq = requests.session()  # 创建session对象，保持会话
 head = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
-    'Connection': 'close'}
+    'Connection': 'close',
+    'referer':'https://music.163.com/playlist?id=391125700'}
 false = False
 true = True
 
@@ -100,3 +104,19 @@ def reckon_time(func):  # func 被装饰的函数名称
         print(f'耗时: {(time.time()-start):.20f}')
         return res  # 返回被装饰函数运行结果
     return inner
+
+
+# AES加解密
+class Edcryp():
+
+    @classmethod
+    def encrypt(cls, data, key, iv, mode=AES.MODE_CBC):
+        crypto = AES.new(key.encode('utf8'), mode, iv.encode('utf8'))
+        msg = crypto.encrypt(pad(json.dumps(data).encode('utf-8'), 16))
+        return base64.b64encode(msg).decode('utf-8')
+
+    @classmethod
+    def decrypt(cls, data, key, iv, mode=AES.MODE_CBC):
+        decrypto = AES.new(key.encode('utf8'), mode, iv.encode('utf8'))
+        msg = decrypto.decrypt(base64.b64decode(data.encode('utf-8')))
+        return eval(msg.strip().decode('utf-8'))
