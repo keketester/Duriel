@@ -1,6 +1,7 @@
 import json
 import time
 import requests
+from selenium import webdriver
 import aiohttp
 import aiofiles
 import asyncio
@@ -22,6 +23,11 @@ head = {
     }
 false = False
 true = True
+options = webdriver.ChromeOptions()
+# options设置chrome位置
+options.binary_location = r"C:\Program Files (x86)\ChromeCore\ChromeCore.exe"
+# 配置到实例
+driver = webdriver.Chrome(chrome_options=options)
 
 
 def js(r):
