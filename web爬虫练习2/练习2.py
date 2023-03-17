@@ -1,5 +1,6 @@
 from utils.duriel import *
 from lxml import etree
+
 xml = """
 <book>
     <p>

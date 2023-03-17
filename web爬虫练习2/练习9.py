@@ -9,8 +9,9 @@ async def download(url):
     name = url.rsplit('/', 1)[1]
     async with aiohttp.ClientSession() as aios:
         async with aios.get(url) as aiores:
+            content = await aiores.content.read()
             with open(f'pics/{name}', 'wb') as f:
-                f.write(await aiores.content.read())
+                f.write(content)
                 print('保存成功')
 
 

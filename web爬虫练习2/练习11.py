@@ -8,4 +8,6 @@ def merge_ts():
     pass
 
 
-driver.get("https://www.4399.com")
+a = ['qwe.ts', 'zxcz.ts', 'cdf.ts', 'aszxc.ts']
+b = ' + '.join(a)
+print(b)

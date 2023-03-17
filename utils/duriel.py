@@ -2,6 +2,9 @@ import json
 import time
 from hashlib import md5
 import requests
+import execjs
+from Crypto.PublicKey import RSA
+from pyquery import PyQuery
 from selenium import webdriver
 import aiohttp
 import aiofiles
@@ -11,9 +14,10 @@ import re
 from bs4 import *
 from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Process, Queue
 from lxml import etree
 import base64
-from Crypto.Cipher import AES
+from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Util.Padding import pad
 
 parser = etree.HTMLParser(encoding="utf-8")
@@ -127,6 +131,28 @@ class Edcryp():
         decrypto = AES.new(key.encode('utf8'), mode, iv.encode('utf8'))
         msg = decrypto.decrypt(base64.b64decode(data.encode('utf-8')))
         return eval(msg.rstrip(b'\0') .decode('utf-8'))
+
+
+class Dersa:
+    # Generate RSA key pair
+    key = RSA.generate(2048)
+    private_key = key.export_key()
+    public_key = key.publickey().export_key()
+    # Encrypt message
+    @classmethod
+    def encrypt_rsa(cls, message, public_key):
+        rsa_key = RSA.import_key(public_key)
+        cipher = PKCS1_OAEP.new(rsa_key)
+        encrypted_message = cipher.encrypt(message.encode())
+        return base64.b64encode(encrypted_message)
+
+    # Decrypt message
+    @classmethod
+    def decrypt_rsa(cls, encrypted_message, private_key):
+        rsa_key = RSA.import_key(private_key)
+        cipher = PKCS1_OAEP.new(rsa_key)
+        decoded_message = base64.b64decode(encrypted_message)
+        return cipher.decrypt(decoded_message).decode()
 
 
 class Chaojiying_Client(object):
