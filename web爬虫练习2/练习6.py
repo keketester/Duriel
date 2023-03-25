@@ -63,8 +63,8 @@ def get_key():
 
 
 def get_params():
-    f1 = Edcryp.encrypt(d, key, iv)
-    f2 = Edcryp.encrypt(f1, key1, iv)
+    f1 = Aes.enc(d, key, iv)
+    f2 = Aes.enc(f1, key1, iv)
     return f2
 
 param = get_params()
